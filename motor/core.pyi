@@ -1,6 +1,6 @@
 import typing
 from asyncio import AbstractEventLoop
-from types import ModuleType
+from types import ModuleType, TracebackType
 
 import bson
 import pymongo
@@ -14,6 +14,7 @@ import pymongo.typings
 HAS_SSL: bool
 ssl: ModuleType
 
+_Value = typing.TypeVar('_Value')
 _Type = typing.TypeVar('_Type', bound=typing.Type)
 _Cursor = typing.TypeVar('_Cursor', bound=AgnosticBaseCursor)
 
@@ -131,7 +132,63 @@ class AgnosticClient(AgnosticBaseProperties):
         full_document_before_change: typing.Optional[str] = None,
     ) -> AgnosticChangeStream: ...
 
-class AgnosticClientSession(AgnosticBase): ...
+class _MotorTransactionContext:
+    def __init__(self, session: _Session) -> None: ...
+    async def __aenter__(self) -> _MotorTransactionContext: ...
+    async def __aexit__(
+        self,
+        exc_type: typing.Optional[typing.Type[Exception]],
+        exc_val: typing.Optional[Exception],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> None: ...
+
+class AgnosticClientSession(AgnosticBase):
+    client: AgnosticClient
+    cluster_time: typing.Optional[typing.Mapping[str, typing.Any]]
+    has_ended: bool
+    in_transaction: bool
+    options: pymongo.client_session.SessionOptions
+    operation_time: typing.Optional[bson.timestamp.Timestamp]
+    session_id: typing.Mapping[str, typing.Any]
+
+    async def __aenter__(self) -> AgnosticClientSession: ...
+    async def __aexit__(
+        self,
+        exc_type: typing.Optional[typing.Type[Exception]],
+        exc_val: typing.Optional[Exception],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> None: ...
+    def __enter__(self) -> typing.Never: ...
+    def __exit__(
+        self,
+        exc_type: typing.Optional[typing.Type[Exception]],
+        exc_val: typing.Optional[Exception],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> None: ...
+    def advance_cluster_time(
+        self, cluster_time: typing.Mapping[str, typing.Any]
+    ) -> None: ...
+    def advance_operation_time(self, operation_time: bson.timestamp.Timestamp): ...
+    async def abort_transaction(self) -> None: ...
+    async def commit_transaction(self) -> None: ...
+    async def end_session(self) -> None: ...
+    def get_io_loop(self) -> _IO_Loop: ...
+    def start_transaction(
+        self,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        max_commit_time_ns: typing.Optional[int] = None,
+    ) -> _MotorTransactionContext: ...
+    async def with_transaction(
+        self,
+        coro: typing.Callable[[AgnosticClientSession], typing.Awaitable[_Value]],
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        max_commit_time_ns: typing.Optional[int] = None,
+    ) -> _Value: ...
+
 class AgnosticDatabase(AgnosticBaseProperties): ...
 class AgnosticCollection(AgnosticBaseProperties): ...
 class AgnosticBaseCursor(AgnosticBase): ...
