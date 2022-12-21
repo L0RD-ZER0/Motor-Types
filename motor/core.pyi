@@ -15,10 +15,14 @@ HAS_SSL: bool
 ssl: ModuleType
 
 _Value = typing.TypeVar('_Value')
+_Document = typing.TypeVar('_Document', bound=typing.Mapping[str, typing.Any])
 _Type = typing.TypeVar('_Type', bound=typing.Type)
 _Cursor = typing.TypeVar('_Cursor', bound=AgnosticBaseCursor)
 
+_Collation = typing.Union[typing.Mapping[str, typing.Any], pymongo.collation.Collation]
+_Collection = typing.Union[pymongo.collection.Collection, AgnosticCollection]
 _Database = typing.Union[pymongo.database.Database, AgnosticDatabase]
+_Pipeline = typing.Sequence[typing.Mapping[str, typing.Any]]
 _Session = typing.Union[pymongo.client_session.ClientSession, AgnosticClientSession]
 _ReadPreferences = typing.Union[
     pymongo.read_preferences.Primary,
@@ -158,7 +162,7 @@ class AgnosticClientSession(AgnosticBase):
         exc_val: typing.Optional[Exception],
         exc_tb: typing.Optional[TracebackType],
     ) -> None: ...
-    def __enter__(self) -> typing.Never: ...
+    def __enter__(self) -> typing.NoReturn: ...
     def __exit__(
         self,
         exc_type: typing.Optional[typing.Type[Exception]],
@@ -189,7 +193,113 @@ class AgnosticClientSession(AgnosticBase):
         max_commit_time_ns: typing.Optional[int] = None,
     ) -> _Value: ...
 
-class AgnosticDatabase(AgnosticBaseProperties): ...
+class AgnosticDatabase(AgnosticBaseProperties):
+    name: str
+    client: AgnosticClient
+
+    def __bool__(self) -> typing.NoReturn: ...
+    def __getitem__(self) -> AgnosticCollection: ...
+    def __getattr__(self) -> AgnosticCollection: ...
+    def __hash__(self) -> int: ...
+    def __init__(self, client: AgnosticClient, name: str, **kwargs: typing.Any): ...
+    def aggregate(
+        self, pipeline: _Pipeline, *args: typing.Any, **kwargs: typing.Any
+    ) -> AgnosticLatentCommandCursor: ...
+    async def command(
+        self,
+        command: typing.Union[str, typing.MutableMapping[str, typing.Any]],
+        value: typing.Any = 1,
+        check: bool = True,
+        allowable_errors: typing.Optional[
+            typing.Sequence[typing.Union[str, int]]
+        ] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[_Document]
+        ] = None,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> _Document: ...
+    async def create_collection(
+        self,
+        name: str,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+        session: typing.Optional[_Session] = None,
+        check_exists: typing.Optional[bool] = True,
+        **kwargs: typing.Any,
+    ) -> AgnosticCollection: ...
+    async def dereference(
+        self,
+        dbref: bson.dbref.DBRef,
+        session: typing.Optional[_Session],
+        comment: typing.Optional[typing.Any],
+        **kwargs: typing.Any,
+    ) -> _Document: ...
+    async def drop_collection(
+        self,
+        name_or_collection: typing.Union[str, _Collection],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        encrypted_fields: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+    ) -> typing.Dict[str, typing.Any]: ...
+    def get_collection(
+        self,
+        name: str,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+    ) -> AgnosticCollection: ...
+    def get_io_loop(self) -> _IO_Loop: ...
+    async def list_collection_names(
+        self,
+        session: typing.Optional[_Session] = None,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> typing.List[str]: ...
+    async def list_collections(
+        self,
+        session: typing.Optional[_Session] = None,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> AgnosticCommandCursor: ...
+    async def validate_collection(
+        self,
+        name_or_collection: typing.Union[str, _Collection],
+        scandata: bool = False,
+        full: bool = False,
+        session: typing.Optional[_Session] = None,
+        background: typing.Optional[bool] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> typing.Dict[str, typing.Any]: ...
+    def watch(
+        self,
+        pipeline: typing.Optional[_Pipeline] = None,
+        full_document: typing.Optional[str] = None,
+        resume_after: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        max_await_time_ms: typing.Optional[int] = None,
+        batch_size: typing.Optional[int] = None,
+        collation: typing.Optional[_Collation] = None,
+        start_at_operation_time: typing.Optional[bson.timestamp.Timestamp] = None,
+        session: typing.Optional[_Session] = None,
+        start_after: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        full_document_before_change: typing.Optional[str] = None,
+    ) -> AgnosticChangeStream: ...
+    def with_options(
+        self,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+    ) -> AgnosticDatabase: ...
+
 class AgnosticCollection(AgnosticBaseProperties): ...
 class AgnosticBaseCursor(AgnosticBase): ...
 class AgnosticCursor(AgnosticBaseCursor): ...
