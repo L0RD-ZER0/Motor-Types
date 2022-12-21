@@ -1,15 +1,35 @@
 [tool.poetry]
 name = "motor-types"
-version = "0.0.0"
+version = "0.1.0"
 description = "Python stubs for Motor, a Non-Blocking MongoDB driver for Python's Tornado and AsyncIO based applications."
 authors = ["L0RD-ZER0 <ackerhon@gmail.com>"]
 readme = "README.md"
 packages = [{include = "motor"}]
 
+[project.urls]
+homepage = "https://github.com/L0RD-ZER0/Motor-Types"
+repository = "https://github.com/L0RD-ZER0/Motor-Types"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 pymongo = "^4.3.3"
 motor = "^3.1.1"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.20.0"
+
+[tool.isort]
+profile = "black"
+line_length = 88
+append_only = true
+src_paths = ["src"]
+combine_star = true
+combine_as_imports = true
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+skip-string-normalization = true
 
 [build-system]
 requires = ["poetry-core"]
