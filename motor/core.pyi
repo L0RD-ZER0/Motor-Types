@@ -3,11 +3,13 @@ from asyncio import AbstractEventLoop
 from types import ModuleType, TracebackType
 
 import bson
+import bson.raw_bson
 import pymongo
 import pymongo.client_session
 import pymongo.collation
 import pymongo.database
 import pymongo.read_concern
+import pymongo.results
 import pymongo.topology_description
 import pymongo.typings
 
@@ -31,6 +33,18 @@ _ReadPreferences = typing.Union[
     pymongo.read_preferences.SecondaryPreferred,
     pymongo.read_preferences.Nearest,
 ]
+_Operation = typing.Union[
+    pymongo.operations.InsertOne,
+    pymongo.operations.DeleteOne,
+    pymongo.operations.DeleteMany,
+    pymongo.operations.ReplaceOne,
+    pymongo.operations.UpdateOne,
+    pymongo.operations.UpdateMany,
+]
+_Index = typing.Sequence[
+    typing.Tuple[str, typing.Union[int, str, typing.Mapping[str, typing.Any]]]
+]
+_Key_or_Index = typing.Union[str, _Index]
 _IO_Loop = AbstractEventLoop
 
 class AgnosticBase(object):
@@ -300,7 +314,378 @@ class AgnosticDatabase(AgnosticBaseProperties):
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
     ) -> AgnosticDatabase: ...
 
-class AgnosticCollection(AgnosticBaseProperties): ...
+class AgnosticCollection(AgnosticBaseProperties):
+    name: str
+    full_name: str
+
+    def __hash__(self) -> int: ...
+    def __bool__(self) -> typing.NoReturn: ...
+    def __getitem__(self, item: str) -> AgnosticCollection: ...
+    def __getattr__(self, item: str) -> AgnosticCollection: ...
+    def __init__(
+        self,
+        database: AgnosticDatabase,
+        name: str,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+        _delegate: typing.Optional[pymongo.collection.Collection] = None,
+    ): ...
+    def aggregate(
+        self,
+        pipeline: _Pipeline,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> AgnosticLatentCommandCursor: ...
+    def aggregate_raw_batches(
+        self,
+        pipeline: _Pipeline,
+        **kwargs: typing.Any,
+    ) -> AgnosticLatentCommandCursor: ...
+    async def bulk_write(
+        self,
+        requests: typing.Sequence[_Operation],
+        ordered: bool = True,
+        bypass_document_validation: bool = False,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        let: typing.Optional[typing.Mapping] = None,
+    ) -> pymongo.results.BulkWriteResult: ...
+    async def count_documents(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        session: typing.Optional[_Session],
+        comment: typing.Optional[typing.Any],
+        **kwargs: typing.Any,
+    ) -> int: ...
+    async def create_index(
+        self,
+        keys: _Key_or_Index,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> str: ...
+    async def create_indexes(
+        self,
+        indexes: typing.Sequence[pymongo.operations.IndexModel],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> typing.List: ...
+    async def delete_many(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        collation: typing.Optional[_Collation] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.DeleteResult: ...
+    async def delete_one(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        collation: typing.Optional[_Collation] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.DeleteResult: ...
+    async def distinct(
+        self,
+        key: str,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> typing.List: ...
+    async def drop(
+        self,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        encrypted_fields: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+    ) -> None: ...
+    async def drop_index(
+        self,
+        index_or_name: _Key_or_Index,
+        session: typing.Optional[_Session],
+        comment: typing.Optional[typing.Any],
+        **kwargs: typing.Any,
+    ) -> None: ...
+    async def drop_indexes(
+        self,
+        session: typing.Optional[_Session],
+        comment: typing.Optional[typing.Any],
+        **kwargs: typing.Any,
+    ) -> None: ...
+    async def estimated_document_count(
+        self,
+        comment: typing.Optional[typing.Any],
+        **kwargs: typing.Any,
+    ) -> int: ...
+    def find(
+        self,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        projection: typing.Optional[
+            typing.Mapping[str, typing.Any] | typing.Iterable[str]
+        ] = None,
+        skip: int = 0,
+        limit: int = 0,
+        no_cursor_timeout: bool = False,
+        cursor_type: int = pymongo.cursor.CursorType.NON_TAILABLE,
+        sort: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        allow_partial_results: bool = False,
+        oplog_replay: bool = False,
+        batch_size: int = 0,
+        collation: typing.Optional[typing.Mapping[str, typing.Any] | _Collation] = None,
+        hint: typing.Optional[
+            str
+            | typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        max_scan: typing.Optional[int] = None,
+        max_time_ms: typing.Optional[int] = None,
+        max: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        min: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        return_key: typing.Optional[bool] = None,
+        show_record_id: typing.Optional[bool] = None,
+        snapshot: typing.Optional[bool] = None,
+        comment: typing.Optional[typing.Any] = None,
+        session: typing.Optional[_Session] = None,
+        allow_disk_use: typing.Optional[bool] = None,
+        let: typing.Optional[bool] = None,
+    ) -> AgnosticCursor: ...
+    async def find_one(
+        self,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        projection: typing.Optional[
+            typing.Mapping[str, typing.Any] | typing.Iterable[str]
+        ] = None,
+        skip: int = 0,
+        limit: int = 0,  # Ignored by the driver.
+        no_cursor_timeout: bool = False,
+        cursor_type: int = pymongo.cursor.CursorType.NON_TAILABLE,
+        sort: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        allow_partial_results: bool = False,
+        oplog_replay: bool = False,
+        batch_size: int = 0,
+        collation: typing.Optional[typing.Mapping[str, typing.Any] | _Collation] = None,
+        hint: typing.Optional[
+            str
+            | typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        max_scan: typing.Optional[int] = None,
+        max_time_ms: typing.Optional[int] = None,
+        max: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        min: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        return_key: typing.Optional[bool] = None,
+        show_record_id: typing.Optional[bool] = None,
+        snapshot: typing.Optional[bool] = None,
+        comment: typing.Optional[typing.Any] = None,
+        session: typing.Optional[_Session] = None,
+        allow_disk_use: typing.Optional[bool] = None,
+        let: typing.Optional[bool] = None,
+    ) -> typing.Optional[_Document]: ...
+    async def find_one_and_delete(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        projection: typing.Optional[
+            typing.Union[typing.Mapping[str, typing.Any], typing.Iterable[str]]
+        ] = None,
+        sort: typing.Optional[_Index] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> _Document: ...
+    async def find_one_and_replace(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        replacement: typing.Mapping[str, typing.Any],
+        projection: typing.Optional[
+            typing.Union[typing.Mapping[str, typing.Any], typing.Iterable[str]]
+        ] = None,
+        sort: typing.Optional[_Index] = None,
+        upsert: bool = False,
+        return_document: bool = pymongo.collection.ReturnDocument.BEFORE,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> _Document: ...
+    async def find_one_and_update(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        update: typing.Union[typing.Mapping[str, typing.Any], _Pipeline],
+        projection: typing.Optional[
+            typing.Union[typing.Mapping[str, typing.Any], typing.Iterable[str]]
+        ] = None,
+        sort: typing.Optional[_Index] = None,
+        upsert: bool = False,
+        return_document: bool = pymongo.collection.ReturnDocument.BEFORE,
+        array_filters: typing.Optional[
+            typing.Sequence[typing.Mapping[str, typing.Any]]
+        ] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> _Document: ...
+    def find_raw_batches(
+        self,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        projection: typing.Optional[
+            typing.Mapping[str, typing.Any] | typing.Iterable[str]
+        ] = None,
+        skip: int = 0,
+        limit: int = 0,
+        no_cursor_timeout: bool = False,
+        cursor_type: int = pymongo.cursor.CursorType.NON_TAILABLE,
+        sort: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        allow_partial_results: bool = False,
+        oplog_replay: bool = False,
+        batch_size: int = 0,
+        collation: typing.Optional[typing.Mapping[str, typing.Any] | _Collation] = None,
+        hint: typing.Optional[
+            str
+            | typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        max_scan: typing.Optional[int] = None,
+        max_time_ms: typing.Optional[int] = None,
+        max: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        min: typing.Optional[
+            typing.Sequence[tuple[str, int | str | typing.Mapping[str, typing.Any]]]
+        ] = None,
+        return_key: typing.Optional[bool] = None,
+        show_record_id: typing.Optional[bool] = None,
+        snapshot: typing.Optional[bool] = None,
+        comment: typing.Optional[typing.Any] = None,
+        session: typing.Optional[_Session] = None,
+        allow_disk_use: typing.Optional[bool] = None,
+        let: typing.Optional[bool] = None,
+    ) -> AgnosticRawBatchCursor: ...
+    def get_io_loop(self) -> _IO_Loop: ...
+    async def index_information(
+        self,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> typing.MutableMapping[str, typing.Any]: ...
+    async def insert_many(
+        self,
+        documents: typing.Iterable[
+            typing.Union[_Document, bson.raw_bson.RawBSONDocument]
+        ],
+        ordered: bool = True,
+        bypass_document_validation: bool = False,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.InsertManyResult: ...
+    async def insert_one(
+        self,
+        document: typing.Union[_Document, bson.raw_bson.RawBSONDocument],
+        bypass_document_validation: bool = False,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.InsertOneResult: ...
+    def list_indexes(
+        self,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> AgnosticLatentCommandCursor: ...
+    async def options(
+        self,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> typing.MutableMapping[str, typing.Any]: ...
+    async def rename(
+        self,
+        new_name: str,
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
+        **kwargs: typing.Any,
+    ) -> typing.MutableMapping[str, typing.Any]: ...
+    async def replace_one(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        replacement: typing.Mapping[str, typing.Any],
+        upsert: bool = False,
+        bypass_document_validation: bool = False,
+        collation: typing.Optional[_Collation] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.UpdateResult: ...
+    async def update_many(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        update: typing.Union[typing.Mapping[str, typing.Any], _Pipeline],
+        upsert: bool = False,
+        array_filters: typing.Optional[
+            typing.Sequence[typing.Mapping[str, typing.Any]]
+        ] = None,
+        bypass_document_validation: typing.Optional[bool] = None,
+        collation: typing.Optional[_Collation] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.UpdateResult: ...
+    async def update_one(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        update: typing.Union[typing.Mapping[str, typing.Any], _Pipeline],
+        upsert: bool = False,
+        bypass_document_validation: bool = False,
+        collation: typing.Optional[_Collation] = None,
+        array_filters: typing.Optional[
+            typing.Sequence[typing.Mapping[str, typing.Any]]
+        ] = None,
+        hint: typing.Optional[_Key_or_Index] = None,
+        session: typing.Optional[_Session] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+    ) -> pymongo.results.UpdateResult: ...
+    def watch(
+        self,
+        pipeline: typing.Optional[_Pipeline] = None,
+        full_document: typing.Optional[str] = None,
+        resume_after: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        max_await_time_ms: typing.Optional[int] = None,
+        batch_size: typing.Optional[int] = None,
+        collation: typing.Optional[_Collation] = None,
+        start_at_operation_time: typing.Optional[bson.timestamp.Timestamp] = None,
+        session: typing.Optional[_Session] = None,
+        start_after: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        comment: typing.Optional[typing.Any] = None,
+        full_document_before_change: typing.Optional[str] = None,
+    ) -> AgnosticChangeStream: ...
+    def with_options(
+        self,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+    ) -> AgnosticCollection: ...
+
 class AgnosticBaseCursor(AgnosticBase): ...
 class AgnosticCursor(AgnosticBaseCursor): ...
 class AgnosticRawBatchCursor(AgnosticCursor): ...
