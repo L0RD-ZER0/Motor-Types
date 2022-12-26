@@ -8,6 +8,7 @@ import bson.raw_bson
 import pymongo
 import pymongo.client_session
 import pymongo.collation
+import pymongo.command_cursor
 import pymongo.database
 import pymongo.read_concern
 import pymongo.results
@@ -813,6 +814,27 @@ class AgnosticRawBatchCommandCursor(AgnosticCommandCursor):
     async def __aenter__(self) -> AgnosticRawBatchCommandCursor: ...
     def batch_size(self, batch_size: int) -> AgnosticRawBatchCommandCursor: ...
 
-class AgnosticLatentCommandCursor(AgnosticCommandCursor): ...
+class AgnosticLatentCommandCursor(AgnosticCommandCursor):
+    args: typing.Optional[typing.Tuple]
+    kwargs: typing.Optional[typing.Dict]
+    start: typing.Optional[
+        typing.Callable[[typing.Any], pymongo.command_cursor.CommandCursor[_Document]]
+    ]
+
+    def __init__(
+        self,
+        collection: AgnosticCollection,
+        start: typing.Optional[
+            typing.Callable[
+                [typing.Any], pymongo.command_cursor.CommandCursor[_Document]
+            ]
+        ],
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> None: ...
+    def __aiter__(self) -> AgnosticLatentCommandCursor: ...
+    async def __aenter__(self) -> AgnosticLatentCommandCursor: ...
+    def batch_size(self, batch_size: int) -> AgnosticLatentCommandCursor: ...
+
 class AgnosticChangeStream(AgnosticBase): ...
 class AgnosticClientEncryption(AgnosticBase): ...
