@@ -10,6 +10,7 @@ import pymongo.client_session
 import pymongo.collation
 import pymongo.command_cursor
 import pymongo.database
+import pymongo.encryption
 import pymongo.read_concern
 import pymongo.results
 import pymongo.topology_description
@@ -882,4 +883,69 @@ class AgnosticChangeStream(AgnosticBase):
     def next(self) -> _Document: ...
     def try_next(self) -> typing.Optional[_Document]: ...
 
-class AgnosticClientEncryption(AgnosticBase): ...
+class AgnosticClientEncryption(AgnosticBase):
+    io_loop: _IO_Loop
+
+    def __init__(
+        self,
+        kms_providers: typing.Mapping[str, typing.Any],
+        key_vault_namespace: str,
+        key_vault_client: AgnosticClient,
+        codec_options: bson.codec_options.CodecOptions,
+        kms_tls_options: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+    ) -> None: ...
+    async def __aenter__(self) -> AgnosticClientEncryption: ...
+    async def __aexit__(
+        self,
+        exc_type: typing.Optional[typing.Type[Exception]],
+        exc_val: typing.Optional[Exception],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> None: ...
+    def __enter__(self) -> typing.NoReturn: ...
+    def __exit__(
+        self,
+        exc_type: typing.Optional[typing.Type[Exception]],
+        exc_val: typing.Optional[Exception],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> None: ...
+    async def add_key_alt_name(
+        self, id: bson.binary.Binary, key_alt_name: str
+    ) -> typing.Any: ...
+    async def create_data_key(
+        self,
+        kms_provider: str,
+        master_key: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        key_alt_names: typing.Optional[typing.Sequence[str]] = None,
+        key_material: typing.Optional[bytes] = None,
+    ) -> bson.binary.Binary: ...
+    async def close(self) -> None: ...
+    async def delete_key(
+        self, id: bson.binary.Binary
+    ) -> pymongo.results.DeleteResult: ...
+    async def decrypt(self, value: bson.binary.Binary) -> typing.Any: ...
+    async def encrypt(
+        self,
+        value: typing.Any,
+        algorithm: str,
+        key_id: typing.Optional[bson.binary.Binary] = None,
+        key_alt_name: typing.Optional[str] = None,
+        query_type: typing.Optional[str] = None,
+        contention_factor: typing.Optional[int] = None,
+    ) -> bson.binary.Binary: ...
+    async def get_key(
+        self, id: bson.binary.Binary
+    ) -> typing.Optional[bson.raw_bson.RawBSONDocument]: ...
+    async def get_keys(self) -> AgnosticCursor: ...
+    async def get_key_by_alt_name(
+        self, key_alt_name: str
+    ) -> typing.Optional[bson.raw_bson.RawBSONDocument]: ...
+    async def remove_key_alt_name(
+        self, id: bson.binary.Binary, key_alt_name: str
+    ) -> typing.Optional[bson.raw_bson.RawBSONDocument]: ...
+    async def rewrap_many_data_key(
+        self,
+        filter: typing.Mapping[str, typing.Any],
+        provider: typing.Optional[str] = None,
+        master_key: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+    ) -> pymongo.encryption.RewrapManyDataKeyResult: ...
+    def get_io_loop(self) -> _IO_Loop: ...
