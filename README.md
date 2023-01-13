@@ -36,6 +36,7 @@ This package uses following dependencies:
 * [PyMongo] (For PyMongo related types)
 * [Motor] (For Referencing and as an installation shorthand)
 * [Pre-Commit] (For maintaining code quality)
+* [Typing-Extensions] (For using the latest typing features)
 
 How to Contribute?
 ------------------
@@ -55,6 +56,7 @@ This repository is licensed under MIT License. The [license][License] can be fou
 [PyMongo]: https://github.com/mongodb/mongo-python-driver
 [Poetry]: https://github.com/python-poetry/poetry
 [Pre-Commit]: https://pre-commit.com
+[Typing-Extensions]: https://github.com/python/typing_extensions
 [Python]: https://python.org
 [Tornado]: https://www.tornadoweb.org/
 [Asyncio]: https://docs.python.org/3/library/asyncio.html
@@ -63,4 +65,4 @@ This repository is licensed under MIT License. The [license][License] can be fou
 [PyCharm-Stubs]: https://www.jetbrains.com/help/pycharm/stubs.html
 [GH-Repo]: https://github.com/L0RD-ZER0/Motor-Types
 [GH-Issues]: https://github.com/L0RD-ZER0/Motor-Types/issues
-[License]: /LICENSE
+[License]: ./LICENSE
