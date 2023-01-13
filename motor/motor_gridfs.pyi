@@ -2,17 +2,32 @@ import datetime
 from asyncio import AbstractEventLoop
 from os import SEEK_SET as _SEEK_SET
 from types import TracebackType
-from typing import Any, Iterable, List, Mapping, NoReturn, Optional, Type
+from typing import IO, Any, Iterable, List, Mapping, NoReturn, Optional, Type, Union
 
-from gridfs.grid_file import GridIn, GridOut
+from bson import ObjectId
+from gridfs.grid_file import DEFAULT_CHUNK_SIZE, GridIn, GridOut
+from pymongo import read_preferences as _read_preferences
 from pymongo.client_session import ClientSession
+from pymongo.write_concern import WriteConcern
 from typing_extensions import Literal, Self
 
-from .core import AgnosticCollection, AgnosticCursor
+from .core import (
+    AgnosticClientSession,
+    AgnosticCollection,
+    AgnosticCursor,
+    AgnosticDatabase,
+)
 from .metaprogramming import ReadOnlyProperty
 
 _IO_Loop = AbstractEventLoop
 _Handler = Any  # Replace it with tornado.web.RequestHandler
+_ReadPreferences = Union[
+    _read_preferences.Primary,
+    _read_preferences.PrimaryPreferred,
+    _read_preferences.Secondary,
+    _read_preferences.SecondaryPreferred,
+    _read_preferences.Nearest,
+]
 
 class MotorGridOutProperty(ReadOnlyProperty):
     pass
@@ -100,4 +115,79 @@ class AgnosticGridIn(object):
     def writeable(self) -> Literal[True]: ...
     async def set(self, name: str, value: Any) -> None: ...
 
-class AgnosticGridFSBucket(object): ...
+class AgnosticGridFSBucket(object):
+    collection: AgnosticCollection
+    def __init__(
+        self,
+        database: AgnosticDatabase,
+        bucket_name: str = 'fs',
+        chunk_size_bytes: int = DEFAULT_CHUNK_SIZE,
+        write_concern: WriteConcern = None,
+        read_preferences: _ReadPreferences = None,
+        collection: AgnosticCollection = None,
+    ) -> None: ...
+    async def delete(
+        self, file_id: Any, session: Optional[AgnosticClientSession] = None
+    ) -> None: ...
+    async def download_to_stream(
+        self,
+        file_id: Any,
+        destination: IO,
+        session: Optional[AgnosticClientSession] = None,
+    ) -> None: ...
+    async def download_to_stream_by_name(
+        self,
+        filename: str,
+        destination: IO,
+        revision: int = -1,
+        session: Optional[AgnosticClientSession] = None,
+    ) -> None: ...
+    async def find(
+        self,
+        filter: Optional[Mapping[str, Any]] = None,
+        skip: int = 0,
+        limit: int = 0,
+        no_cursor_timeout: bool = False,
+        sort: Optional[Any] = None,
+        batch_size: int = 0,
+        session: Optional[ClientSession] = None,
+    ) -> AgnosticGridOutCursor: ...
+    async def get_io_loop(self) -> _IO_Loop: ...
+    async def open_download_stream(
+        self, file_id: Any, session: Optional[AgnosticClientSession] = None
+    ) -> AgnosticGridOut: ...
+    async def open_download_stream_by_name(self) -> AgnosticGridOut: ...
+    def open_upload_stream(
+        self, file_id: Any, session: Optional[AgnosticClientSession] = None
+    ) -> AgnosticGridIn: ...
+    def open_upload_stream_with_id(
+        self,
+        file_id: Any,
+        filename: str,
+        chunk_size_bytes: Optional[int] = None,
+        metadata: Optional[Mapping[str, Any]] = None,
+        session: Optional[AgnosticClientSession] = None,
+    ) -> AgnosticGridIn: ...
+    async def rename(
+        self,
+        file_id: Any,
+        new_filename: str,
+        session: Optional[AgnosticClientSession] = None,
+    ) -> None: ...
+    async def upload_from_stream(
+        self,
+        filename: str,
+        source: Any,
+        chunk_size_bytes: Optional[int] = None,
+        metadata: Optional[Mapping[str, Any]] = None,
+        session: Optional[AgnosticClientSession] = None,
+    ) -> ObjectId: ...
+    async def upload_from_stream_with_id(
+        self,
+        file_id: Any,
+        filename: str,
+        source: IO,
+        chunk_size_bytes: Optional[int] = None,
+        metadata: Optional[Mapping[str, Any]] = None,
+        session: Optional[AgnosticClientSession] = None,
+    ) -> None: ...
