@@ -2,22 +2,11 @@ import datetime
 from asyncio import AbstractEventLoop
 from os import SEEK_SET as _SEEK_SET
 from types import TracebackType
-from typing import (
-    Any,
-    Awaitable,
-    Dict,
-    Iterable,
-    List,
-    Mapping,
-    NoReturn,
-    Optional,
-    Type,
-    Union,
-)
+from typing import Any, Iterable, List, Mapping, NoReturn, Optional, Type
 
 from gridfs.grid_file import GridIn, GridOut
 from pymongo.client_session import ClientSession
-from typing_extensions import Literal, Protocol, Self
+from typing_extensions import Literal, Self
 
 from .core import AgnosticCollection, AgnosticCursor
 from .metaprogramming import ReadOnlyProperty
