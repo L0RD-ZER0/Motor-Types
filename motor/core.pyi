@@ -21,13 +21,14 @@ HAS_SSL: bool
 ssl: ModuleType
 
 _Value = typing.TypeVar('_Value')
-_Document = typing.TypeVar('_Document', bound=typing.Mapping[str, typing.Any])
+# _Document = typing.TypeVar('_Document', bound=typing.Mapping[str, typing.Any])
 _Type = typing.TypeVar('_Type', bound=typing.Type)
 _Cursor = typing.TypeVar('_Cursor', bound=AgnosticBaseCursor)
 
 _Collation = typing.Union[typing.Mapping[str, typing.Any], pymongo.collation.Collation]
 _Collection = typing.Union[pymongo.collection.Collection, AgnosticCollection]
 _Database = typing.Union[pymongo.database.Database, AgnosticDatabase]
+_Document = typing.Mapping[str, typing.Any]
 _Pipeline = typing.Sequence[typing.Mapping[str, typing.Any]]
 _Session = typing.Union[pymongo.client_session.ClientSession, AgnosticClientSession]
 _ReadPreferences = typing.Union[
@@ -68,7 +69,7 @@ class AgnosticClient(AgnosticBaseProperties):
     is_mongos: bool
     is_primary: bool
     io_loop: _IO_Loop
-    nodes: typing.FrozenSet[str, typing.Optional[int]]
+    nodes: typing.FrozenSet[typing.Tuple[str, typing.Optional[int]]]
     options: pymongo.mongo_client.ClientOptions
     primary: typing.Optional[typing.Tuple[str, int]]
     secondaries: typing.Set[typing.Tuple[str, int]]
