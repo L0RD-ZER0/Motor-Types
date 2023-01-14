@@ -52,8 +52,8 @@ class AgnosticGridOut(object):
         root_collection: AgnosticCollection,
         file_id: Optional[int] = None,
         file_document: Optional[Any] = None,
-        delegate: GridOut = None,
-        session: ClientSession = None,
+        delegate: Optional[GridOut] = None,
+        session: Optional[ClientSession] = None,
         **kwargs: Any,
     ) -> None: ...
     async def __aiter__(self) -> Self: ...
@@ -87,8 +87,8 @@ class AgnosticGridIn(object):
     def __init__(
         self,
         root_collection: AgnosticCollection,
-        delegate: GridIn = None,
-        session: ClientSession = None,
+        delegate: Optional[GridIn] = None,
+        session: Optional[ClientSession] = None,
         **kwargs: Any,
     ) -> None: ...
     async def __aenter__(self) -> Self: ...
@@ -123,9 +123,9 @@ class AgnosticGridFSBucket(object):
         database: AgnosticDatabase,
         bucket_name: str = 'fs',
         chunk_size_bytes: int = DEFAULT_CHUNK_SIZE,
-        write_concern: WriteConcern = None,
-        read_preferences: _ReadPreferences = None,
-        collection: AgnosticCollection = None,
+        write_concern: Optional[WriteConcern] = None,
+        read_preferences: Optional[_ReadPreferences] = None,
+        collection: Optional[AgnosticCollection] = None,
     ) -> None: ...
     async def delete(
         self, file_id: Any, session: Optional[_Session] = None
