@@ -28,6 +28,7 @@ _ReadPreferences = Union[
     _read_preferences.SecondaryPreferred,
     _read_preferences.Nearest,
 ]
+_Session = Union[ClientSession, AgnosticClientSession]
 
 class MotorGridOutProperty(ReadOnlyProperty):
     pass
@@ -89,7 +90,7 @@ class AgnosticGridIn(object):
         delegate: GridIn = None,
         session: ClientSession = None,
         **kwargs: Any,
-    ): ...
+    ) -> None: ...
     async def __aenter__(self) -> Self: ...
     async def __aexit__(
         self,
@@ -127,20 +128,20 @@ class AgnosticGridFSBucket(object):
         collection: AgnosticCollection = None,
     ) -> None: ...
     async def delete(
-        self, file_id: Any, session: Optional[AgnosticClientSession] = None
+        self, file_id: Any, session: Optional[_Session] = None
     ) -> None: ...
     async def download_to_stream(
         self,
         file_id: Any,
         destination: IO,
-        session: Optional[AgnosticClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> None: ...
     async def download_to_stream_by_name(
         self,
         filename: str,
         destination: IO,
         revision: int = -1,
-        session: Optional[AgnosticClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> None: ...
     async def find(
         self,
@@ -150,15 +151,17 @@ class AgnosticGridFSBucket(object):
         no_cursor_timeout: bool = False,
         sort: Optional[Any] = None,
         batch_size: int = 0,
-        session: Optional[ClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> AgnosticGridOutCursor: ...
     async def get_io_loop(self) -> _IO_Loop: ...
     async def open_download_stream(
-        self, file_id: Any, session: Optional[AgnosticClientSession] = None
+        self, file_id: Any, session: Optional[_Session] = None
     ) -> AgnosticGridOut: ...
-    async def open_download_stream_by_name(self) -> AgnosticGridOut: ...
+    async def open_download_stream_by_name(
+        self, filename: str, revision: int = -1, session: Optional[_Session] = None
+    ) -> AgnosticGridOut: ...
     def open_upload_stream(
-        self, file_id: Any, session: Optional[AgnosticClientSession] = None
+        self, file_id: Any, session: Optional[_Session] = None
     ) -> AgnosticGridIn: ...
     def open_upload_stream_with_id(
         self,
@@ -166,13 +169,13 @@ class AgnosticGridFSBucket(object):
         filename: str,
         chunk_size_bytes: Optional[int] = None,
         metadata: Optional[Mapping[str, Any]] = None,
-        session: Optional[AgnosticClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> AgnosticGridIn: ...
     async def rename(
         self,
         file_id: Any,
         new_filename: str,
-        session: Optional[AgnosticClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> None: ...
     async def upload_from_stream(
         self,
@@ -180,7 +183,7 @@ class AgnosticGridFSBucket(object):
         source: Any,
         chunk_size_bytes: Optional[int] = None,
         metadata: Optional[Mapping[str, Any]] = None,
-        session: Optional[AgnosticClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> ObjectId: ...
     async def upload_from_stream_with_id(
         self,
@@ -189,5 +192,5 @@ class AgnosticGridFSBucket(object):
         source: IO,
         chunk_size_bytes: Optional[int] = None,
         metadata: Optional[Mapping[str, Any]] = None,
-        session: Optional[AgnosticClientSession] = None,
+        session: Optional[_Session] = None,
     ) -> None: ...
