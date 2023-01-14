@@ -99,7 +99,7 @@ class AsyncIOMotorDatabase(core.AgnosticDatabase):
         check_exists: typing.Optional[bool] = True,
         **kwargs: typing.Any,
     ) -> AsyncIOMotorCollection: ...
-    async def get_collection(
+    def get_collection(
         self,
         name: str,
         codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
@@ -267,9 +267,9 @@ class AsyncIOMotorGridFSBucket(motor_gridfs.AgnosticGridFSBucket):
         database: AsyncIOMotorDatabase,
         bucket_name: str = 'fs',
         chunk_size_bytes: int = gridfs.DEFAULT_CHUNK_SIZE,
-        write_concern: pymongo.write_concern.WriteConcern = None,
-        read_preferences: _ReadPreferences = None,
-        collection: AsyncIOMotorCollection = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_preferences: typing.Optional[_ReadPreferences] = None,
+        collection: typing.Optional[AsyncIOMotorCollection] = None,
     ) -> None: ...
     async def find(
         self,
@@ -290,10 +290,10 @@ class AsyncIOMotorGridFSBucket(motor_gridfs.AgnosticGridFSBucket):
         revision: int = -1,
         session: typing.Optional[_Session] = None,
     ) -> AsyncIOMotorGridOut: ...
-    async def open_upload_stream(
+    def open_upload_stream(
         self, file_id: typing.Any, session: typing.Optional[_Session] = None
     ) -> AsyncIOMotorGridIn: ...
-    async def open_upload_stream_with_id(
+    def open_upload_stream_with_id(
         self,
         file_id: typing.Any,
         filename: str,
@@ -317,8 +317,8 @@ class AsyncIOMotorGridOut(motor_gridfs.AgnosticGridOut):
         root_collection: AsyncIOMotorCollection,
         file_id: typing.Optional[int] = None,
         file_document: typing.Optional[typing.Any] = None,
-        delegate: gridfs.grid_file.GridOut = None,
-        session: pymongo.client_session.ClientSession = None,
+        delegate: typing.Optional[gridfs.grid_file.GridOut] = None,
+        session: typing.Optional[pymongo.client_session.ClientSession] = None,
         **kwargs: typing.Any,
     ) -> None: ...
 
@@ -334,4 +334,4 @@ class AsyncIOMotorClientEncryption(core.AgnosticClientEncryption):
         codec_options: bson.codec_options.CodecOptions,
         kms_tls_options: typing.Optional[typing.Mapping[str, typing.Any]] = None,
     ) -> None: ...
-    def get_keys(self) -> AsyncIOMotorCursor: ...
+    async def get_keys(self) -> AsyncIOMotorCursor: ...
