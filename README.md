@@ -23,7 +23,7 @@ git clone "https://github.com/L0RD-ZER0/Motor-Types"
 ```
 
 Afterwards, you can do either of the following to use stubs:
-* Copy the stubs manually to either `libs/site-packages/motor` or `libs/site-packages/motor-stubs`
+* Copy the stubs manually to either `libs/site-packages/motor` or `libs/site-packages/motor-stubs`, ideally the latter.
 * Add these stubs manually to project directories.
   * [For MyPy][MyPy-Stubs].
   * [For PyCharm][PyCharm-Stubs].

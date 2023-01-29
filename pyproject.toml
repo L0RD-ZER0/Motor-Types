@@ -4,7 +4,7 @@ version = "0.2.0"
 description = "Python stubs for Motor, a Non-Blocking MongoDB driver for Python's Tornado and AsyncIO based applications."
 authors = ["L0RD-ZER0 <ackerhon@gmail.com>"]
 readme = "README.md"
-packages = [{include = "motor"}]
+packages = [{include = "motor-stubs"}]
 
 [project.urls]
 homepage = "https://github.com/L0RD-ZER0/Motor-Types"
