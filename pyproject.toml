@@ -33,7 +33,7 @@ issues = "https://github.com/L0RD-ZER0/Motor-Types/issues"
 python = ">=3.8.0,<4.0"
 pymongo = { version = ">=4.3.0" }
 motor = { version = ">=3.1.0", optional = true }
-typing-extensions = { version = ">=4.4.0" }
+typing-extensions = { version = ">=4.0.0" }
 dnspython = { version = ">=2.3.0", optional = true }
 
 [tool.poetry.group.dev.dependencies]
