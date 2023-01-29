@@ -14,16 +14,27 @@ stub package.
 
 How to use?
 -----------
-Currently, the package is under development and is not yet available on [PyPI]. It can only be used by means of cloning
-the repository applying these stubs to path manually.
 
+You can either install from [PyPI] using [pip] or add files to your project directories manually.
+
+**Installing Using [pip]:**
+```commandline
+pip install motor-types
+```
+
+**To install [Motor] (and [Dnspython]) alongside the package:**
+```commandline
+pip install motor-types[motor]
+```
+
+**To add files to the project manually:**
 Use this command to clone the repository:
 ```commandline
 git clone "https://github.com/L0RD-ZER0/Motor-Types"
 ```
 
 Afterwards, you can do either of the following to use stubs:
-* Copy the stubs manually to either `libs/site-packages/motor` or `libs/site-packages/motor-stubs`, ideally the latter.
+* Copy the stubs manually to either ``libs/site-packages/motor`` or ``libs/site-packages/motor-stubs``, ideally the latter.
 * Add these stubs manually to project directories.
   * [For MyPy][MyPy-Stubs].
   * [For PyCharm][PyCharm-Stubs].
@@ -34,7 +45,8 @@ Dependencies
 This package uses following dependencies:
 * [Poetry] (For Packaging and Publishing)
 * [PyMongo] (For PyMongo related types)
-* [Motor] (For Referencing and as an installation shorthand)
+* [Motor] (For Referencing and for motor installation extra)
+* [Dnspython] (For motor installation extra)
 * [Pre-Commit] (For maintaining code quality)
 * [Typing-Extensions] (For using the latest typing features)
 
@@ -55,6 +67,8 @@ This repository is licensed under MIT License. The [license][License] can be fou
 [MongoDB]: https://www.mongodb.com
 [PyMongo]: https://github.com/mongodb/mongo-python-driver
 [Poetry]: https://github.com/python-poetry/poetry
+[pip]: https://pypi.org/project/pip/
+[Dnspython]: https://www.dnspython.org/
 [Pre-Commit]: https://pre-commit.com
 [Typing-Extensions]: https://github.com/python/typing_extensions
 [Python]: https://python.org

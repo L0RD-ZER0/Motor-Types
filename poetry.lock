@@ -59,7 +59,7 @@ name = "motor"
 version = "3.1.1"
 description = "Non-blocking MongoDB driver for Tornado or asyncio"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -117,7 +117,7 @@ name = "pymongo"
 version = "4.3.3"
 description = "Python driver for MongoDB <http://www.mongodb.org>"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -177,10 +177,13 @@ platformdirs = ">=2.4,<3"
 docs = ["proselint (>=0.13)", "sphinx (>=5.3)", "sphinx-argparse (>=0.3.2)", "sphinx-rtd-theme (>=1)", "towncrier (>=22.8)"]
 testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7)", "packaging (>=21.3)", "pytest (>=7.0.1)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.2)", "pytest-mock (>=3.6.1)", "pytest-randomly (>=3.10.3)", "pytest-timeout (>=2.1)"]
 
+[extras]
+install = ["pymongo", "motor"]
+
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.8"
-content-hash = "39c83c7c4de73fcd3fac2dc662c90996a042d5e35e54d68e7b75486948f5a816"
+python-versions = ">=3.8.0,<4.0"
+content-hash = "e05272395e66e1641b3c631b6cdcb1e2972d5cf42f8cf8455ad15d2c2c7818ed"
 
 [metadata.files]
 cfgv = [
