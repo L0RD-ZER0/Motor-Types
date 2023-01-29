@@ -17,17 +17,17 @@ How to use?
 
 You can either install from [PyPI] using [pip] or add files to your project directories manually.
 
-**Installing Using [pip]:**
+### Installing Using [pip]:
 ```commandline
 pip install motor-types
 ```
 
-**To install [Motor] (and [Dnspython]) alongside the package:**
+### To install [Motor] (and [Dnspython]) alongside the package:
 ```commandline
 pip install motor-types[motor]
 ```
 
-**To add files to the project manually:**
+### To add files to the project manually:
 Use this command to clone the repository:
 ```commandline
 git clone "https://github.com/L0RD-ZER0/Motor-Types"
@@ -39,6 +39,26 @@ Afterwards, you can do either of the following to use stubs:
   * [For MyPy][MyPy-Stubs].
   * [For PyCharm][PyCharm-Stubs].
   * For other static type-checking tools, consider referring to their corresponding documentation regarding stubs.
+
+Examples:
+---------
+### Auto-Complete Example
+**Without Stubs:**
+
+![ACNS]
+
+**With Stubs:**
+
+![ACWS]
+
+### Type-Checking Example
+**Without Stubs:**
+
+![TCNS]
+
+**With Stubs:**
+
+![TCWS]
 
 Dependencies
 ------------
@@ -80,3 +100,7 @@ This repository is licensed under MIT License. The [license][License] can be fou
 [GH-Repo]: https://github.com/L0RD-ZER0/Motor-Types
 [GH-Issues]: https://github.com/L0RD-ZER0/Motor-Types/issues
 [License]: https://github.com/L0RD-ZER0/Motor-Types/blob/master/LICENSE
+[ACNS]: https://github.com/L0RD-ZER0/Motor-Types/raw/master/examples/auto-complete-example-ns.png
+[ACWS]: https://github.com/L0RD-ZER0/Motor-Types/raw/master/examples/auto-complete-example-ws.png
+[TCNS]: https://github.com/L0RD-ZER0/Motor-Types/raw/master/examples/type-checking-example-ns.png
+[TCWS]: https://github.com/L0RD-ZER0/Motor-Types/raw/master/examples/type-checking-example-ws.png
