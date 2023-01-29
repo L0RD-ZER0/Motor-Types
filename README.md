@@ -79,4 +79,4 @@ This repository is licensed under MIT License. The [license][License] can be fou
 [PyCharm-Stubs]: https://www.jetbrains.com/help/pycharm/stubs.html
 [GH-Repo]: https://github.com/L0RD-ZER0/Motor-Types
 [GH-Issues]: https://github.com/L0RD-ZER0/Motor-Types/issues
-[License]: ./LICENSE
+[License]: https://github.com/L0RD-ZER0/Motor-Types/blob/master/LICENSE
