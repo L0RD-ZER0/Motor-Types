@@ -22,12 +22,11 @@ classifiers = [
     "Topic :: Utilities",
     "Typing :: Stubs Only",
 ]
-
-[project.urls]
 homepage = "https://github.com/L0RD-ZER0/Motor-Types"
 repository = "https://github.com/L0RD-ZER0/Motor-Types"
-issues = "https://github.com/L0RD-ZER0/Motor-Types/issues"
 
+[tools.poetry.urls]
+"Bug Tracker" = "https://github.com/L0RD-ZER0/Motor-Types/issues"
 
 [tool.poetry.dependencies]
 python = ">=3.8.0,<4.0"
