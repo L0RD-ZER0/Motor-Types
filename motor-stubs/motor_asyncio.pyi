@@ -30,30 +30,30 @@ class AsyncIOMotorClient(core.AgnosticClient):
     def __getattr__(self, item: str) -> AsyncIOMotorDatabase: ...
     def get_database(
         self,
-        name: typing.Optional[str],
-        codec_options: typing.Optional[bson.codec_options.CodecOptions],
-        read_preferences: typing.Optional[_ReadPreferences],
-        write_concern: typing.Optional[pymongo.write_concern.WriteConcern],
-        read_concern: typing.Optional[pymongo.read_concern.ReadConcern],
+        name: typing.Optional[str] = None,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preferences: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
     ) -> AsyncIOMotorDatabase: ...
     def get_default_database(
         self,
-        default: typing.Optional[str],
-        codec_options: typing.Optional[bson.codec_options.CodecOptions],
-        read_preferences: typing.Optional[_ReadPreferences],
-        write_concern: typing.Optional[pymongo.write_concern.WriteConcern],
-        read_concern: typing.Optional[pymongo.read_concern.ReadConcern],
-        comment: typing.Optional[typing.Any],
+        default: typing.Optional[str] = None,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preferences: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+        comment: typing.Optional[typing.Any] = None,
     ) -> AsyncIOMotorDatabase: ...
     async def list_databases(
         self,
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> AsyncIOMotorCommandCursor: ...
     async def start_session(
         self,
-        casual_consistency: typing.Optional[bool],
+        casual_consistency: typing.Optional[bool] = None,
         default_transaction_options: typing.Optional[
             pymongo.client_session.TransactionOptions
         ] = None,
