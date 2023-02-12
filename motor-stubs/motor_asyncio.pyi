@@ -230,7 +230,7 @@ class AsyncIOMotorLatentCommandCursor(core.AgnosticLatentCommandCursor):
             typing.Callable[
                 [typing.Any], pymongo.command_cursor.CommandCursor[_Document]
             ]
-        ],
+        ] = None,
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> None: ...

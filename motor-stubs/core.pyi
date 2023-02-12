@@ -93,45 +93,45 @@ class AgnosticClient(AgnosticBaseProperties):
     async def drop_database(
         self,
         name_or_database: typing.Union[str, _Database],
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
     ) -> None: ...
     def get_database(
         self,
-        name: typing.Optional[str],
-        codec_options: typing.Optional[bson.codec_options.CodecOptions],
-        read_preferences: typing.Optional[_ReadPreferences],
-        write_concern: typing.Optional[pymongo.write_concern.WriteConcern],
-        read_concern: typing.Optional[pymongo.read_concern.ReadConcern],
+        name: typing.Optional[str] = None,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preferences: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
     ) -> AgnosticDatabase: ...
     def get_default_database(
         self,
-        default: typing.Optional[str],
-        codec_options: typing.Optional[bson.codec_options.CodecOptions],
-        read_preferences: typing.Optional[_ReadPreferences],
-        write_concern: typing.Optional[pymongo.write_concern.WriteConcern],
-        read_concern: typing.Optional[pymongo.read_concern.ReadConcern],
-        comment: typing.Optional[typing.Any],
+        default: typing.Optional[str] = None,
+        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        read_preferences: typing.Optional[_ReadPreferences] = None,
+        write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
+        read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
+        comment: typing.Optional[typing.Any] = None,
     ) -> AgnosticDatabase: ...
     def get_io_loop(self) -> _IO_Loop: ...
     async def list_database_names(
         self,
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
     ) -> list[str]: ...
     async def list_databases(
         self,
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> AgnosticCommandCursor: ...
     async def server_info(
         self,
-        session: typing.Optional[_Session],
+        session: typing.Optional[_Session] = None,
     ) -> typing.Dict[str, typing.Any]: ...
     async def start_session(
         self,
-        casual_consistency: typing.Optional[bool],
+        casual_consistency: typing.Optional[bool] = None,
         default_transaction_options: typing.Optional[
             pymongo.client_session.TransactionOptions
         ] = None,
@@ -160,9 +160,9 @@ class _MotorTransactionContext:
     async def __aenter__(self) -> Self: ...
     async def __aexit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
 
 class AgnosticClientSession(AgnosticBase):
@@ -177,16 +177,16 @@ class AgnosticClientSession(AgnosticBase):
     async def __aenter__(self) -> Self: ...
     async def __aexit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     def __enter__(self) -> typing.NoReturn: ...
     def __exit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     def advance_cluster_time(
         self, cluster_time: typing.Mapping[str, typing.Any]
@@ -258,8 +258,8 @@ class AgnosticDatabase(AgnosticBaseProperties):
     async def dereference(
         self,
         dbref: bson.dbref.DBRef,
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> _Document: ...
     async def drop_collection(
@@ -364,8 +364,8 @@ class AgnosticCollection(AgnosticBaseProperties):
     async def count_documents(
         self,
         filter: typing.Mapping[str, typing.Any],
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> int: ...
     async def create_index(
@@ -417,19 +417,19 @@ class AgnosticCollection(AgnosticBaseProperties):
     async def drop_index(
         self,
         index_or_name: _Key_or_Index,
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> None: ...
     async def drop_indexes(
         self,
-        session: typing.Optional[_Session],
-        comment: typing.Optional[typing.Any],
+        session: typing.Optional[_Session] = None,
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> None: ...
     async def estimated_document_count(
         self,
-        comment: typing.Optional[typing.Any],
+        comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
     ) -> int: ...
     def find(
@@ -710,9 +710,9 @@ class AgnosticBaseCursor(AgnosticBase):
     async def __anext__(self) -> _Document: ...
     async def __aexit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     async def _async_close(self) -> None: ...
     def _buffer_size(self) -> int: ...
@@ -726,7 +726,7 @@ class AgnosticBaseCursor(AgnosticBase):
         self,
         callback: typing.Callable[
             [typing.Optional[_Document], typing.Optional[Exception]], typing.Any
-        ],
+        ] = None,
     ) -> None: ...
     def get_io_loop(self) -> _IO_Loop: ...
     async def next(self) -> _Document: ...
@@ -790,7 +790,7 @@ class AgnosticLatentCommandCursor(AgnosticCommandCursor):
             typing.Callable[
                 [typing.Any], pymongo.command_cursor.CommandCursor[_Document]
             ]
-        ],
+        ] = None,
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> None: ...
@@ -821,17 +821,17 @@ class AgnosticChangeStream(AgnosticBase):
     async def __aenter__(self) -> Self: ...
     async def __aexit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     async def __anext__(self) -> _Document: ...
     def __enter__(self) -> typing.NoReturn: ...
     def __exit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     def _lazy_init(self) -> None: ...
     def _try_next(self) -> typing.Optional[_Document]: ...
@@ -855,16 +855,16 @@ class AgnosticClientEncryption(AgnosticBase):
     async def __aenter__(self) -> Self: ...
     async def __aexit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     def __enter__(self) -> typing.NoReturn: ...
     def __exit__(
         self,
-        exc_type: typing.Optional[typing.Type[Exception]],
-        exc_val: typing.Optional[Exception],
-        exc_tb: typing.Optional[TracebackType],
+        exc_type: typing.Optional[typing.Type[Exception]] = None,
+        exc_val: typing.Optional[Exception] = None,
+        exc_tb: typing.Optional[TracebackType] = None,
     ) -> None: ...
     async def add_key_alt_name(
         self, id: bson.binary.Binary, key_alt_name: str

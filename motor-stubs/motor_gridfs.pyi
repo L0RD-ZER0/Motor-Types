@@ -94,16 +94,16 @@ class AgnosticGridIn(object):
     async def __aenter__(self) -> Self: ...
     async def __aexit__(
         self,
-        exc_type: Optional[Type[Exception]],
-        exc_val: Optional[Exception],
-        exc_tb: Optional[TracebackType],
+        exc_type: Optional[Type[Exception]] = None,
+        exc_val: Optional[Exception] = None,
+        exc_tb: Optional[TracebackType] = None,
     ) -> None: ...
     def __getattr__(self, name: str) -> Any: ...
     async def _exit(
         self,
-        exc_type: Optional[Type[Exception]],
-        exc_val: Optional[Exception],
-        exc_tb: Optional[TracebackType],
+        exc_type: Optional[Type[Exception]] = None,
+        exc_val: Optional[Exception] = None,
+        exc_tb: Optional[TracebackType] = None,
     ) -> None: ...
     async def abort(self) -> None: ...
     async def close(self) -> None: ...
