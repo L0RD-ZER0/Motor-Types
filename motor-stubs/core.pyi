@@ -471,7 +471,7 @@ class AgnosticCollection(AgnosticBaseProperties):
     ) -> AgnosticCursor: ...
     async def find_one(
         self,
-        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        filter: typing.Optional[typing.Union[typing.Mapping[str, typing.Any], typing.Any]] = None,
         projection: typing.Optional[
             typing.Mapping[str, typing.Any] | typing.Iterable[str]
         ] = None,
