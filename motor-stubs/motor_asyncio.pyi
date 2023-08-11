@@ -153,7 +153,7 @@ class AsyncIOMotorCollection(core.AgnosticCollection):
     ) -> AsyncIOMotorLatentCommandCursor: ...
     def find(
         self,
-        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        filter: typing.Optional[typing.Union[typing.Mapping[str, typing.Any], typing.Any]] = None,
         projection: typing.Optional[
             typing.Mapping[str, typing.Any] | typing.Iterable[str]
         ] = None,
@@ -273,7 +273,7 @@ class AsyncIOMotorGridFSBucket(motor_gridfs.AgnosticGridFSBucket):
     ) -> None: ...
     async def find(
         self,
-        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
+        filter: typing.Optional[typing.Union[typing.Mapping[str, typing.Any], typing.Any]] = None,
         skip: int = 0,
         limit: int = 0,
         no_cursor_timeout: bool = False,
