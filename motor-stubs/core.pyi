@@ -434,7 +434,7 @@ class AgnosticCollection(AgnosticBaseProperties):
     ) -> int: ...
     def find(
         self,
-        filter: typing.Optional[typing.Union[typing.Mapping[str, typing.Any], typing.Any]] = None,
+        filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
         projection: typing.Optional[
             typing.Mapping[str, typing.Any] | typing.Iterable[str]
         ] = None,
@@ -471,6 +471,7 @@ class AgnosticCollection(AgnosticBaseProperties):
     ) -> AgnosticCursor: ...
     async def find_one(
         self,
+        # ``find_one`` can convert non-mapping types to a filter that looks like ``{"_id": <value>}``.
         filter: typing.Optional[typing.Union[typing.Mapping[str, typing.Any], typing.Any]] = None,
         projection: typing.Optional[
             typing.Mapping[str, typing.Any] | typing.Iterable[str]
