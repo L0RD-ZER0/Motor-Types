@@ -53,7 +53,7 @@ class AsyncIOMotorClient(core.AgnosticClient):
     ) -> AsyncIOMotorCommandCursor: ...
     async def start_session(
         self,
-        casual_consistency: typing.Optional[bool] = None,
+        causal_consistency: typing.Optional[bool] = None,
         default_transaction_options: typing.Optional[
             pymongo.client_session.TransactionOptions
         ] = None,
