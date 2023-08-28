@@ -271,7 +271,7 @@ class AsyncIOMotorGridFSBucket(motor_gridfs.AgnosticGridFSBucket):
         read_preferences: typing.Optional[_ReadPreferences] = None,
         collection: typing.Optional[AsyncIOMotorCollection] = None,
     ) -> None: ...
-    async def find(
+    def find(
         self,
         filter: typing.Optional[typing.Mapping[str, typing.Any]] = None,
         skip: int = 0,
