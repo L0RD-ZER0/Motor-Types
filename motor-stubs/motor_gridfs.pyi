@@ -143,7 +143,7 @@ class AgnosticGridFSBucket(object):
         revision: int = -1,
         session: Optional[_Session] = None,
     ) -> None: ...
-    async def find(
+    def find(
         self,
         filter: Optional[Mapping[str, Any]] = None,
         skip: int = 0,
