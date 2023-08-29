@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "motor-types"
-version = "1.0.0b1"
+version = "1.0.0b3"
 description = "Python stubs for Motor, a Non-Blocking MongoDB driver for Python's Tornado and AsyncIO based applications."
 authors = ["L0RD-ZER0 <ackerhon@gmail.com>"]
 readme = "README.md"
