@@ -52,10 +52,10 @@ _ReadPreferences = typing.Union[
     pymongo.read_preferences.Nearest,
 ]
 _Operation = typing.Union[
-    pymongo.operations.InsertOne[typing.Any],
+    pymongo.operations.InsertOne[_Document],
     pymongo.operations.DeleteOne,
     pymongo.operations.DeleteMany,
-    pymongo.operations.ReplaceOne[typing.Any],
+    pymongo.operations.ReplaceOne[_Document],
     pymongo.operations.UpdateOne,
     pymongo.operations.UpdateMany,
 ]
