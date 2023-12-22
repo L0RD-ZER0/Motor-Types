@@ -1,10 +1,15 @@
 import typing
 
 import bson
+import bson.codec_options
+import bson.timestamp
 import gridfs
+import gridfs.grid_file
 import pymongo.client_session
 import pymongo.collation
+import pymongo.collection
 import pymongo.command_cursor
+import pymongo.cursor
 import pymongo.read_concern
 import pymongo.read_preferences
 import pymongo.write_concern
@@ -31,7 +36,9 @@ class AsyncIOMotorClient(core.AgnosticClient):
     def get_database(
         self,
         name: typing.Optional[str] = None,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preferences: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -39,7 +46,9 @@ class AsyncIOMotorClient(core.AgnosticClient):
     def get_default_database(
         self,
         default: typing.Optional[str] = None,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preferences: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -91,7 +100,9 @@ class AsyncIOMotorDatabase(core.AgnosticDatabase):
     async def create_collection(
         self,
         name: str,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -102,7 +113,9 @@ class AsyncIOMotorDatabase(core.AgnosticDatabase):
     def get_collection(
         self,
         name: str,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -134,11 +147,13 @@ class AsyncIOMotorCollection(core.AgnosticCollection):
         self,
         database: AsyncIOMotorDatabase,
         name: str,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
-        _delegate: typing.Optional[pymongo.collection.Collection] = None,
+        _delegate: typing.Optional[pymongo.collection.Collection[typing.Any]] = None,
     ): ...
     def aggregate(
         self,
@@ -211,13 +226,17 @@ class AsyncIOMotorCollection(core.AgnosticCollection):
 class AsyncIOMotorCursor(core.AgnosticCursor):
     session: AsyncIOMotorClientSession
     def __init__(
-        self, cursor: pymongo.cursor.Cursor, collection: AsyncIOMotorCollection
+        self,
+        cursor: pymongo.cursor.Cursor[_Document],
+        collection: AsyncIOMotorCollection,
     ) -> None: ...
 
 class AsyncIOMotorCommandCursor(core.AgnosticCommandCursor):
     session: AsyncIOMotorClientSession
     def __init__(
-        self, cursor: pymongo.cursor.Cursor, collection: AsyncIOMotorCollection
+        self,
+        cursor: pymongo.cursor.Cursor[_Document],
+        collection: AsyncIOMotorCollection,
     ) -> None: ...
 
 class AsyncIOMotorLatentCommandCursor(core.AgnosticLatentCommandCursor):
@@ -331,7 +350,7 @@ class AsyncIOMotorClientEncryption(core.AgnosticClientEncryption):
         kms_providers: typing.Mapping[str, typing.Any],
         key_vault_namespace: str,
         key_vault_client: AsyncIOMotorClient,
-        codec_options: bson.codec_options.CodecOptions,
+        codec_options: bson.codec_options.CodecOptions[typing.Any],
         kms_tls_options: typing.Optional[typing.Mapping[str, typing.Any]] = None,
     ) -> None: ...
     async def get_keys(self) -> AsyncIOMotorCursor: ...

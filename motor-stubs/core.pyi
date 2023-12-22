@@ -4,17 +4,28 @@ from collections import deque as _deque
 from types import ModuleType, TracebackType
 
 import bson
+import bson.binary
+import bson.code
+import bson.codec_options
+import bson.dbref
 import bson.raw_bson
+import bson.timestamp
 import pymongo
 import pymongo.client_session
 import pymongo.collation
+import pymongo.collection
 import pymongo.command_cursor
+import pymongo.cursor
 import pymongo.database
 import pymongo.encryption
+import pymongo.mongo_client
+import pymongo.operations
 import pymongo.read_concern
+import pymongo.read_preferences
 import pymongo.results
 import pymongo.topology_description
 import pymongo.typings
+import pymongo.write_concern
 from typing_extensions import Self
 
 HAS_SSL: bool
@@ -25,10 +36,12 @@ _Value = typing.TypeVar('_Value')
 _Type = typing.TypeVar('_Type', bound=typing.Type)
 _Cursor = typing.TypeVar('_Cursor', bound=AgnosticBaseCursor)
 
-_Collation = typing.Union[typing.Mapping[str, typing.Any], pymongo.collation.Collation]
-_Collection = typing.Union[pymongo.collection.Collection, AgnosticCollection]
-_Database = typing.Union[pymongo.database.Database, AgnosticDatabase]
 _Document = typing.Mapping[str, typing.Any]
+_Collation = typing.Union[typing.Mapping[str, typing.Any], pymongo.collation.Collation]
+_Collection = typing.Union[
+    pymongo.collection.Collection[_Document], AgnosticCollection
+]
+_Database = typing.Union[pymongo.database.Database[_Document], AgnosticDatabase]
 _Pipeline = typing.Sequence[typing.Mapping[str, typing.Any]]
 _Session = typing.Union[pymongo.client_session.ClientSession, AgnosticClientSession]
 _ReadPreferences = typing.Union[
@@ -39,10 +52,10 @@ _ReadPreferences = typing.Union[
     pymongo.read_preferences.Nearest,
 ]
 _Operation = typing.Union[
-    pymongo.operations.InsertOne,
+    pymongo.operations.InsertOne[typing.Any],
     pymongo.operations.DeleteOne,
     pymongo.operations.DeleteMany,
-    pymongo.operations.ReplaceOne,
+    pymongo.operations.ReplaceOne[typing.Any],
     pymongo.operations.UpdateOne,
     pymongo.operations.UpdateMany,
 ]
@@ -56,7 +69,7 @@ class AgnosticBase(object):
     def __init__(self, delegate: _Type) -> None: ...
 
 class AgnosticBaseProperties(AgnosticBase):
-    codec_options: bson.codec_options.CodecOptions
+    codec_options: bson.codec_options.CodecOptions[typing.Any]
     read_preference: _ReadPreferences
     read_concern: pymongo.read_concern.ReadConcern
     write_concern: pymongo.write_concern.WriteConcern
@@ -99,7 +112,9 @@ class AgnosticClient(AgnosticBaseProperties):
     def get_database(
         self,
         name: typing.Optional[str] = None,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preferences: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -107,7 +122,9 @@ class AgnosticClient(AgnosticBaseProperties):
     def get_default_database(
         self,
         default: typing.Optional[str] = None,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preferences: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -247,7 +264,9 @@ class AgnosticDatabase(AgnosticBaseProperties):
     async def create_collection(
         self,
         name: str,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -272,7 +291,9 @@ class AgnosticDatabase(AgnosticBaseProperties):
     def get_collection(
         self,
         name: str,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -317,7 +338,9 @@ class AgnosticDatabase(AgnosticBaseProperties):
     ) -> AgnosticChangeStream: ...
     def with_options(
         self,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -335,11 +358,13 @@ class AgnosticCollection(AgnosticBaseProperties):
         self,
         database: AgnosticDatabase,
         name: str,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
-        _delegate: typing.Optional[pymongo.collection.Collection] = None,
+        _delegate: typing.Optional[pymongo.collection.Collection[_Document]] = None,
     ) -> None: ...
     def aggregate(
         self,
@@ -359,7 +384,7 @@ class AgnosticCollection(AgnosticBaseProperties):
         bypass_document_validation: bool = False,
         session: typing.Optional[_Session] = None,
         comment: typing.Optional[typing.Any] = None,
-        let: typing.Optional[typing.Mapping] = None,
+        let: typing.Optional[typing.Mapping[str, typing.Any]] = None,
     ) -> pymongo.results.BulkWriteResult: ...
     async def count_documents(
         self,
@@ -381,7 +406,7 @@ class AgnosticCollection(AgnosticBaseProperties):
         session: typing.Optional[_Session] = None,
         comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
-    ) -> typing.List: ...
+    ) -> typing.List[typing.Any]: ...
     async def delete_many(
         self,
         filter: typing.Mapping[str, typing.Any],
@@ -407,7 +432,7 @@ class AgnosticCollection(AgnosticBaseProperties):
         session: typing.Optional[_Session] = None,
         comment: typing.Optional[typing.Any] = None,
         **kwargs: typing.Any,
-    ) -> typing.List: ...
+    ) -> typing.List[typing.Any]: ...
     async def drop(
         self,
         session: typing.Optional[_Session] = None,
@@ -472,7 +497,9 @@ class AgnosticCollection(AgnosticBaseProperties):
     async def find_one(
         self,
         # ``find_one`` can convert non-mapping types to a filter that looks like ``{"_id": <value>}``.
-        filter: typing.Optional[typing.Union[typing.Mapping[str, typing.Any], typing.Any]] = None,
+        filter: typing.Optional[
+            typing.Union[typing.Mapping[str, typing.Any], typing.Any]
+        ] = None,
         projection: typing.Optional[
             typing.Mapping[str, typing.Any] | typing.Iterable[str]
         ] = None,
@@ -690,7 +717,9 @@ class AgnosticCollection(AgnosticBaseProperties):
     ) -> AgnosticChangeStream: ...
     def with_options(
         self,
-        codec_options: typing.Optional[bson.codec_options.CodecOptions] = None,
+        codec_options: typing.Optional[
+            bson.codec_options.CodecOptions[typing.Any]
+        ] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
@@ -704,7 +733,7 @@ class AgnosticBaseCursor(AgnosticBase):
     session: typing.Optional[AgnosticClientSession]
 
     def __init__(
-        self, cursor: pymongo.cursor.Cursor, collection: AgnosticCollection
+        self, cursor: pymongo.cursor.Cursor[_Document], collection: AgnosticCollection
     ) -> None: ...
     def __aiter__(self) -> Self: ...
     async def __aenter__(self) -> Self: ...
@@ -725,8 +754,10 @@ class AgnosticBaseCursor(AgnosticBase):
     async def close(self) -> None: ...
     def each(
         self,
-        callback: typing.Callable[
-            [typing.Optional[_Document], typing.Optional[Exception]], typing.Any
+        callback: typing.Optional[
+            typing.Callable[
+                [typing.Optional[_Document], typing.Optional[Exception]], typing.Any
+            ]
         ] = None,
     ) -> None: ...
     def get_io_loop(self) -> _IO_Loop: ...
@@ -736,8 +767,10 @@ class AgnosticBaseCursor(AgnosticBase):
 
 class AgnosticCursor(AgnosticBaseCursor):
     def __copy__(self) -> Self: ...
-    def __deepcopy__(self, memodict: typing.Optional[typing.Dict] = None) -> Self: ...
-    async def _Cursor__die(self, synchronous=False) -> None: ...
+    def __deepcopy__(
+        self, memodict: typing.Optional[typing.Dict[str, typing.Any]] = None
+    ) -> Self: ...
+    async def _Cursor__die(self, synchronous: bool = False) -> None: ...
     def _data(self) -> _deque: ...
     def _killed(self) -> bool: ...
     def _query_flags(self) -> int: ...
@@ -746,7 +779,7 @@ class AgnosticCursor(AgnosticBaseCursor):
     def clone(self) -> Self: ...
     def collation(self, collation: _Collation) -> Self: ...
     def comment(self, comment: typing.Any) -> Self: ...
-    async def distinct(self, key: str) -> typing.List: ...
+    async def distinct(self, key: str) -> typing.List[typing.Any]: ...
     async def explain(self) -> _Document: ...
     def hint(self, index: typing.Optional[_Index]) -> Self: ...
     def limit(self, limit: int) -> Self: ...
@@ -769,7 +802,7 @@ class AgnosticRawBatchCursor(AgnosticCursor):
     pass
 
 class AgnosticCommandCursor(AgnosticBaseCursor):
-    async def _Cursor__die(self, synchronous=False) -> None: ...
+    async def _Cursor__die(self, synchronous: bool = False) -> None: ...
     def _data(self) -> _deque: ...
     def _killed(self) -> bool: ...
     def _query_flags(self) -> typing.Literal[0]: ...
@@ -778,8 +811,8 @@ class AgnosticRawBatchCommandCursor(AgnosticCommandCursor):
     pass
 
 class AgnosticLatentCommandCursor(AgnosticCommandCursor):
-    args: typing.Optional[typing.Tuple]
-    kwargs: typing.Optional[typing.Dict]
+    args: typing.Optional[typing.Tuple[typing.Any]]
+    kwargs: typing.Optional[typing.Dict[str, typing.Any]]
     start: typing.Optional[
         typing.Callable[[typing.Any], pymongo.command_cursor.CommandCursor[_Document]]
     ]
@@ -850,7 +883,7 @@ class AgnosticClientEncryption(AgnosticBase):
         kms_providers: typing.Mapping[str, typing.Any],
         key_vault_namespace: str,
         key_vault_client: AgnosticClient,
-        codec_options: bson.codec_options.CodecOptions,
+        codec_options: bson.codec_options.CodecOptions[typing.Any],
         kms_tls_options: typing.Optional[typing.Mapping[str, typing.Any]] = None,
     ) -> None: ...
     async def __aenter__(self) -> Self: ...
