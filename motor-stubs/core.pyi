@@ -36,12 +36,12 @@ _Value = typing.TypeVar('_Value')
 _Type = typing.TypeVar('_Type', bound=typing.Type)
 _Cursor = typing.TypeVar('_Cursor', bound=AgnosticBaseCursor)
 
+_Document = typing.Mapping[str, typing.Any]
 _Collation = typing.Union[typing.Mapping[str, typing.Any], pymongo.collation.Collation]
 _Collection = typing.Union[
-    pymongo.collection.Collection[typing.Any], AgnosticCollection
+    pymongo.collection.Collection[_Document], AgnosticCollection
 ]
-_Database = typing.Union[pymongo.database.Database[typing.Any], AgnosticDatabase]
-_Document = typing.Mapping[str, typing.Any]
+_Database = typing.Union[pymongo.database.Database[_Document], AgnosticDatabase]
 _Pipeline = typing.Sequence[typing.Mapping[str, typing.Any]]
 _Session = typing.Union[pymongo.client_session.ClientSession, AgnosticClientSession]
 _ReadPreferences = typing.Union[
