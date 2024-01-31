@@ -115,7 +115,7 @@ class AgnosticClient(AgnosticBaseProperties):
         codec_options: typing.Optional[
             bson.codec_options.CodecOptions[typing.Any]
         ] = None,
-        read_preferences: typing.Optional[_ReadPreferences] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
     ) -> AgnosticDatabase: ...
@@ -125,7 +125,7 @@ class AgnosticClient(AgnosticBaseProperties):
         codec_options: typing.Optional[
             bson.codec_options.CodecOptions[typing.Any]
         ] = None,
-        read_preferences: typing.Optional[_ReadPreferences] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
         comment: typing.Optional[typing.Any] = None,

@@ -39,7 +39,7 @@ class AsyncIOMotorClient(core.AgnosticClient):
         codec_options: typing.Optional[
             bson.codec_options.CodecOptions[typing.Any]
         ] = None,
-        read_preferences: typing.Optional[_ReadPreferences] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
     ) -> AsyncIOMotorDatabase: ...
@@ -49,7 +49,7 @@ class AsyncIOMotorClient(core.AgnosticClient):
         codec_options: typing.Optional[
             bson.codec_options.CodecOptions[typing.Any]
         ] = None,
-        read_preferences: typing.Optional[_ReadPreferences] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
         comment: typing.Optional[typing.Any] = None,
@@ -287,7 +287,7 @@ class AsyncIOMotorGridFSBucket(motor_gridfs.AgnosticGridFSBucket):
         bucket_name: str = 'fs',
         chunk_size_bytes: int = gridfs.DEFAULT_CHUNK_SIZE,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
-        read_preferences: typing.Optional[_ReadPreferences] = None,
+        read_preference: typing.Optional[_ReadPreferences] = None,
         collection: typing.Optional[AsyncIOMotorCollection] = None,
     ) -> None: ...
     def find(

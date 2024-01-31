@@ -124,7 +124,7 @@ class AgnosticGridFSBucket(object):
         bucket_name: str = 'fs',
         chunk_size_bytes: int = DEFAULT_CHUNK_SIZE,
         write_concern: Optional[WriteConcern] = None,
-        read_preferences: Optional[_ReadPreferences] = None,
+        read_preference: Optional[_ReadPreferences] = None,
         collection: Optional[AgnosticCollection] = None,
     ) -> None: ...
     async def delete(
