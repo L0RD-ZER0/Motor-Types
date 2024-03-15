@@ -220,7 +220,7 @@ class AgnosticClientSession(AgnosticBase):
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
-        max_commit_time_ns: typing.Optional[int] = None,
+        max_commit_time_ms: typing.Optional[int] = None,
     ) -> _MotorTransactionContext: ...
     async def with_transaction(
         self,
@@ -228,7 +228,7 @@ class AgnosticClientSession(AgnosticBase):
         read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
         write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
         read_preference: typing.Optional[_ReadPreferences] = None,
-        max_commit_time_ns: typing.Optional[int] = None,
+        max_commit_time_ms: typing.Optional[int] = None,
     ) -> _Value: ...
 
 class AgnosticDatabase(AgnosticBaseProperties):
