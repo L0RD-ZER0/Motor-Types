@@ -31,6 +31,8 @@ from typing_extensions import Self
 HAS_SSL: bool
 ssl: ModuleType
 
+_Self = typing.TypeVar('_Self')
+
 _Value = typing.TypeVar('_Value')
 # _Document = typing.TypeVar('_Document', bound=typing.Mapping[str, typing.Any])
 _Type = typing.TypeVar('_Type', bound=typing.Type)
@@ -820,7 +822,7 @@ class AgnosticBaseCursor(AgnosticBase):
             self, cursor: pymongo.cursor.Cursor[_Document], collection: AgnosticCollection
     ) -> None: ...
 
-    def __aiter__(self) -> Self: ...
+    def __aiter__(self: _Self) -> _Self: ...
 
     async def __anext__(self) -> _Document: ...
 
