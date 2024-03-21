@@ -926,6 +926,8 @@ class AgnosticCursor(AgnosticBaseCursor):
 
     def where(self, code: typing.Union[str, bson.code.Code]) -> Self: ...
 
+    def batch_size(self, batch_size: int) -> "AgnosticCursor": ...
+
 
 class AgnosticRawBatchCursor(AgnosticCursor):
     pass
