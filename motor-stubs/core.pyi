@@ -386,14 +386,14 @@ class AgnosticDatabase(AgnosticBaseProperties):
     ) -> AgnosticChangeStream: ...
 
     def with_options(
-            self,
+            self: _Self,
             codec_options: typing.Optional[
                 bson.codec_options.CodecOptions[typing.Any]
             ] = None,
             read_preference: typing.Optional[_ReadPreferences] = None,
             write_concern: typing.Optional[pymongo.write_concern.WriteConcern] = None,
             read_concern: typing.Optional[pymongo.read_concern.ReadConcern] = None,
-    ) -> Self: ...
+    ) -> _Self: ...
 
 
 class AgnosticCollection(AgnosticBaseProperties):
