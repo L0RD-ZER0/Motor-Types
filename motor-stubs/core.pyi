@@ -42,7 +42,7 @@ _Collection = typing.Union[
     pymongo.collection.Collection[_Document], AgnosticCollection
 ]
 _Database = typing.Union[pymongo.database.Database[_Document], AgnosticDatabase]
-_Pipeline = typing.Sequence[typing.Mapping[str, typing.Any]]
+_Pipeline = list[dict[str, typing.Any]]
 _Session = typing.Union[pymongo.client_session.ClientSession, AgnosticClientSession]
 _ReadPreferences = typing.Union[
     pymongo.read_preferences.Primary,
