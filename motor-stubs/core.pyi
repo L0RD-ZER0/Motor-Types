@@ -2,7 +2,6 @@ import typing
 from asyncio import AbstractEventLoop
 from collections import deque as _deque
 from types import ModuleType, TracebackType
-from typing import Self
 
 import bson
 import bson.binary
@@ -27,6 +26,7 @@ import pymongo.results
 import pymongo.topology_description
 import pymongo.typings
 import pymongo.write_concern
+from typing_extensions import Self
 
 HAS_SSL: bool
 ssl: ModuleType
