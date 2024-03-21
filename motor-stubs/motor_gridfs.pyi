@@ -36,6 +36,8 @@ class MotorGridOutProperty(ReadOnlyProperty):
 class AgnosticGridOutCursor(AgnosticCursor):
     def next_object(self) -> Optional[AgnosticGridOut]: ...
 
+    async def __aenter__(self) -> "AgnosticGridOutCursor": ...
+
 class AgnosticGridOut(object):
     _id: Any
     aliases: Optional[List[str]]

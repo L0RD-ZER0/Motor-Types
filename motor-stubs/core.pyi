@@ -824,7 +824,7 @@ class AgnosticBaseCursor(AgnosticBase):
 
     async def __anext__(self) -> _Document: ...
 
-    async def __aenter__(self) -> typing.Type[AgnosticBaseCursor]: ...
+    async def __aenter__(self) -> "AgnosticBaseCursor": ...
 
     async def __aexit__(
             self,
@@ -930,7 +930,7 @@ class AgnosticCursor(AgnosticBaseCursor):
 
 
 class AgnosticRawBatchCursor(AgnosticCursor):
-    pass
+    async def __aenter__(self) -> "AgnosticRawBatchCursor": ...
 
 
 class AgnosticCommandCursor(AgnosticBaseCursor):
@@ -946,7 +946,7 @@ class AgnosticCommandCursor(AgnosticBaseCursor):
 
 
 class AgnosticRawBatchCommandCursor(AgnosticCommandCursor):
-    pass
+    async def __aenter__(self) -> "AgnosticRawBatchCommandCursor": ...
 
 
 class AgnosticLatentCommandCursor(AgnosticCommandCursor):

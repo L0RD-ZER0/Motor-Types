@@ -231,6 +231,8 @@ class AsyncIOMotorCursor(core.AgnosticCursor):
         collection: AsyncIOMotorCollection,
     ) -> None: ...
 
+    async def __aenter__(self) -> "AsyncIOMotorCursor": ...
+
 class AsyncIOMotorCommandCursor(core.AgnosticCommandCursor):
     session: AsyncIOMotorClientSession
     def __init__(
@@ -238,6 +240,8 @@ class AsyncIOMotorCommandCursor(core.AgnosticCommandCursor):
         cursor: pymongo.cursor.Cursor[_Document],
         collection: AsyncIOMotorCollection,
     ) -> None: ...
+
+    async def __aenter__(self) -> "AsyncIOMotorCommandCursor": ...
 
 class AsyncIOMotorLatentCommandCursor(core.AgnosticLatentCommandCursor):
     session: AsyncIOMotorClientSession
@@ -253,6 +257,8 @@ class AsyncIOMotorLatentCommandCursor(core.AgnosticLatentCommandCursor):
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> None: ...
+
+    async def __aenter__(self) -> "AsyncIOMotorLatentCommandCursor": ...
 
 class AsyncIOMotorChangeStream(core.AgnosticChangeStream):
     def __init__(
@@ -343,6 +349,8 @@ class AsyncIOMotorGridOut(motor_gridfs.AgnosticGridOut):
 
 class AsyncIOMotorGridOutCursor(motor_gridfs.AgnosticGridOutCursor):
     def next_object(self) -> typing.Optional[AsyncIOMotorGridOut]: ...
+
+    async def __aenter__(self) -> "AsyncIOMotorGridOutCursor": ...
 
 class AsyncIOMotorClientEncryption(core.AgnosticClientEncryption):
     def __init__(
