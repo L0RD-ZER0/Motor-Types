@@ -966,6 +966,8 @@ class AgnosticLatentCommandCursor(AgnosticCommandCursor):
             **kwargs: typing.Any,
     ) -> None: ...
 
+    async def __aenter__(self) -> "AgnosticLatentCommandCursor": ...
+
 
 class AgnosticChangeStream(AgnosticBase):
     alive: bool
