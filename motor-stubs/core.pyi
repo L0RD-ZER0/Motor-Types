@@ -870,8 +870,6 @@ class AgnosticBaseCursor(AgnosticBase):
 class AgnosticCursor(AgnosticBaseCursor):
     def __copy__(self) -> Self: ...
 
-    async def __anext__(self) -> "AgnosticCursor": ...
-
     def __deepcopy__(
             self, memodict: typing.Optional[typing.Dict[str, typing.Any]] = None
     ) -> Self: ...
@@ -930,7 +928,7 @@ class AgnosticCursor(AgnosticBaseCursor):
 
 
 class AgnosticRawBatchCursor(AgnosticCursor):
-    async def __aenter__(self) -> "AgnosticRawBatchCursor": ...
+    pass
 
 
 class AgnosticCommandCursor(AgnosticBaseCursor):
@@ -938,15 +936,13 @@ class AgnosticCommandCursor(AgnosticBaseCursor):
 
     def _data(self) -> _deque: ...
 
-    async def __anext__(self) -> "AgnosticCommandCursor": ...
-
     def _killed(self) -> bool: ...
 
     def _query_flags(self) -> typing.Literal[0]: ...
 
 
 class AgnosticRawBatchCommandCursor(AgnosticCommandCursor):
-    async def __aenter__(self) -> "AgnosticRawBatchCommandCursor": ...
+    pass
 
 
 class AgnosticLatentCommandCursor(AgnosticCommandCursor):
@@ -967,8 +963,6 @@ class AgnosticLatentCommandCursor(AgnosticCommandCursor):
             *args: typing.Any,
             **kwargs: typing.Any,
     ) -> None: ...
-
-    async def __anext__(self) -> "AgnosticLatentCommandCursor": ...
 
 
 class AgnosticChangeStream(AgnosticBase):
